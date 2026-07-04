@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>نتایج جستجو</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <h3 class="text-center mb-4">نتایج جستجو برای بیمارستان {{ hospital }} (نیاز به گروه {{ blood }} در {{ city }})
+        </h3>
+
+        <div class="row">
+            {% for donor in donors %}
+            <div class="col-md-4 mb-3">
+                <!-- هر داوطلب پیدا شده در یک کارت زیبا نمایش داده می‌شود (مثل نوتیفیکیشن) -->
+                <div class="card border-success shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success">{{ donor['name'] }}</h5>
+                        <p class="card-text">
+                            <span class="badge bg-danger">{{ donor['blood_type'] }}</span><br><br>
+                            شهر: {{ donor['city'] }}<br>
+                            تماس: {{ donor['phone'] }}
+                        </p>
+                        <button class="btn btn-sm btn-outline-success">ارسال پیامک اضطراری</button>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- اگر کسی پیدا نشد -->
+            <div class="col-12">
+                <div class="alert alert-danger text-center">
+                    متأسفانه داوطلب فعالی با این مشخصات در سامانه یافت نشد!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/request" class="btn btn-primary ml-2">ثبت درخواست جدید</a>
+            <a href="/" class="btn btn-outline-secondary">بازگشت به ثبت‌نام داوطلب</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

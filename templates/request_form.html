@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>درخواست خون</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="card shadow-sm border-warning">
+            <div class="card-header bg-warning text-dark text-center">
+                <h4>پنل درخواست اضطراری خون (بیمارستان)</h4>
+            </div>
+            <div class="card-body">
+                <form action="/search_donors" method="POST">
+                    <div class="mb-3">
+                        <label>نام بیمارستان</label>
+                        <input type="text" name="hospital_name" class="form-control" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>گروه خونی مورد نیاز</label>
+                            <select name="needed_blood_type" class="form-select" required>
+                                <option value="">انتخاب کنید...</option>
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>شهر</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">جستجوی داوطلبان هم‌خون</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
