@@ -64,20 +64,54 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6 mb-4">
-                <div class="card stat-card bg-blue">
-                    <h2>درخواست‌های باز</h2>
-                    <p class="mt-2" style="font-size: 2rem;">5</p>
+                <div class="card stat-card bg-red">
+                    <h5>درخواست‌های باز</h5>
+                    <p class="mt-2" style="font-size: 3rem; font-weight: 800;">{{ open_requests }}</p>
+                    <small>درخواست خون هنوز پاسخ داده نشده</small>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
-                <div class="card stat-card bg-red">
-                    <h2>داوطلبان فعال</h2>
-                    <p class="mt-2" style="font-size: 2rem;">12</p>
+                <div class="card stat-card bg-blue">
+                    <h5>داوطلبان فعال</h5>
+                    <p class="mt-2" style="font-size: 3rem; font-weight: 800;">{{ total_donors }}</p>
+                    <small>نفر در سامانه ثبت‌نام کرده‌اند</small>
                 </div>
             </div>
         </div>
-
-
+        <div class="card p-4 mt-2">
+            <h5 class="text-secondary mb-3">آخرین درخواست‌های ثبت شده</h5>
+            <table class="table table-borderless">
+                <thead style="background-color: #f8f9fa; color: #333;">
+                    <tr>
+                        <th>بیمارستان</th>
+                        <th>گروه خونی نیاز</th>
+                        <th>شهر</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in latest_requests %}
+                    <tr>
+                        <td>{{ req['hospital_name'] }}</td>
+                        <td><span class="badge bg-danger">{{ req['needed_blood_type'] }}</span></td>
+                        <td>{{ req['city'] }}</td>
+                        <td><span class="badge bg-warning text-dark">باز</span></td>
+                        <!-- اضافه شدن ستون عملیات -->
+                        <td>
+                            <form action="/close_request/{{ req['id'] }}" method="POST" style="display:inline;"
+                                onsubmit="return confirm('آیا این درخواست برطرف شده و می‌خواهی آن را حذف کنی؟');">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">تکمیل و حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">هیچ درخواستی ثبت نشده است.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </body>

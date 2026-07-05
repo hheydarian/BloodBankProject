@@ -108,15 +108,35 @@ def manage_donors():
 def hospital_login():
     return render_template('hospital_login.html')
 
-# 8. بررسی رمز عبور و ورود به داشبورد
+# 8. بررسی رمز و ورود به داشبورد (هوشمندسازی شده)
 @app.route('/hospital/dashboard', methods=['POST'])
 def hospital_dashboard():
-    password = request.form['password']
-    # رمز عبور پیش‌فرض بیمارستان‌ها
+    password = request.form.get('password', '')
+    
+    if not password:
+        return render_template('hospital_login.html', error=False)
+        
     if password == 'admin123':
-        return render_template('hospital_dashboard.html')
+        # اتصال به دیتابیس برای گرفتن آمار واقعی
+        conn = get_db_connection()
+        
+        # شمارش تعداد کل داوطلبان
+        total_donors = conn.execute("SELECT COUNT(*) FROM donors").fetchone()[0]
+        
+        # شمارش تعداد درخواست‌های خون که هنوز پاسخ داده نشده‌اند (is_resolved = 0)
+        open_requests = conn.execute("SELECT COUNT(*) FROM requests WHERE is_resolved = 0").fetchone()[0]
+        
+        # گرفتن 5 درخواست آخر برای نمایش در پایین صفحه
+        latest_requests = conn.execute("SELECT * FROM requests ORDER BY id DESC LIMIT 5").fetchall()
+        
+        conn.close()
+        
+        # فرستادن اعداد واقعی به صفحه HTML
+        return render_template('hospital_dashboard.html', 
+                            total_donors=total_donors, 
+                            open_requests=open_requests,
+                            latest_requests=latest_requests)
     else:
-        # اگر رمز اشتباه بود، دوباره صفحه لاگین را با یک ارور نشان بده
         return render_template('hospital_login.html', error=True)
 
 
@@ -172,9 +192,30 @@ def bulk_delete():
     return redirect('/hospital/manage_donors')
 
 
+# 14. حذف/بستن درخواست باز از داشبورد
+@app.route('/close_request/<int:id>', methods=['POST'])
+def close_request(id):
+    conn = get_db_connection()
+    conn.execute("DELETE FROM requests WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+    
+    # تغییر این خط:
+    return redirect('/dashboard_view')
 
-
-
+# مسیر مخفی برای بازگشت‌های داخلی (بدون نیاز به لاگین مجدد)
+@app.route('/dashboard_view')
+def dashboard_view():
+    conn = get_db_connection()
+    total_donors = conn.execute("SELECT COUNT(*) FROM donors").fetchone()[0]
+    open_requests = conn.execute("SELECT COUNT(*) FROM requests WHERE is_resolved = 0").fetchone()[0]
+    latest_requests = conn.execute("SELECT * FROM requests ORDER BY id DESC LIMIT 5").fetchall()
+    conn.close()
+    
+    return render_template('hospital_dashboard.html', 
+                        total_donors=total_donors, 
+                        open_requests=open_requests,
+                        latest_requests=latest_requests)
 
 
 

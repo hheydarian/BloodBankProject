@@ -60,9 +60,11 @@
         <p class="text-muted mb-4" style="font-size:0.9rem;">لطفاً رمز عبور اختصاصی را وارد کنید</p>
 
         <form action="/hospital/dashboard" method="POST">
-            <input type="password" name="password" class="form-control mb-3" placeholder="رمز عبور..." required>
-            <button type="submit" class="btn btn-primary w-100">ورود به پنل مدیریت</button>
-            <div class="error-msg">رمز عبور اشتباه است!</div>
+            <input type="password" name="password" class="form-control mb-3" placeholder="رمز عبور..." required> <button
+                type="submit" class="btn btn-primary w-100">ورود به پنل مدیریت</button>
+            {% if error %}
+            <div class="error-msg" style="display: block !important;">رمز عبور اشتباه است!</div>
+            {% endif %}
         </form>
         <a href="/" class="text-muted mt-3 d-inline-block" style="font-size:0.85rem; text-decoration:none;">بازگشت به
             صفحه اصلی</a>
