@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import sqlite3
 
 app = Flask(__name__)
@@ -154,7 +154,22 @@ def update_donor(id):
     return redirect('/hospital/manage_donors')
 
 
-
+# 13. حذف گروهی (چند داوطلب با هم)
+@app.route('/bulk_delete', methods=['POST'])
+def bulk_delete():
+    # گرفتن لیست آیدی‌های تیک خورده
+    selected_ids = request.form.getlist('donor_ids')
+    
+    if selected_ids:
+        conn = get_db_connection()
+        # حلقه روی آیدی‌ها و حذف تک تک از دیتابیس
+        for donor_id in selected_ids:
+            conn.execute("DELETE FROM donors WHERE id=?", (donor_id,))
+        conn.commit()
+        conn.close()
+    
+    # بازگشت به صفحه مدیریت
+    return redirect('/hospital/manage_donors')
 
 
 

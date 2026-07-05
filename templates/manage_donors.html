@@ -72,9 +72,10 @@
             <div class="col-md-11">
                 <div class="table-container">
                     <h4 class="text-secondary mb-4">مدیریت داوطلبان ثبت‌نام شده</h4>
-                    <table class="table table-borderless">
+                    <table class="table table-borderless" id="donorsTable">
                         <thead>
                             <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
                                 <th>ردیف</th>
                                 <th>نام و نام خانوادگی</th>
                                 <th>گروه خونی</th>
@@ -86,12 +87,15 @@
                         <tbody>
                             {% for donor in donors %}
                             <tr>
+                                <td><input type="checkbox" class="donor-checkbox" name="donor_ids"
+                                        value="{{ donor['id'] }}"></td>
                                 <td>{{ loop.index }}</td>
                                 <td>{{ donor['name'] }}</td>
                                 <td>{{ donor['blood_type'] }}</td>
                                 <td>{{ donor['city'] }}</td>
                                 <td dir="ltr">{{ donor['phone'] }}</td>
                                 <td>
+                                    <!-- کدهای دکمه حذف و ویرایش قبلی که بودند ... -->
                                     <!-- فرم حذف -->
                                     <form action="/delete_donor/{{ donor['id'] }}" method="POST" style="display:inline;"
                                         onsubmit="return confirm('آیا از حذف این داوطلب مطمئن هستید؟');">
@@ -110,11 +114,75 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    </table>
+
+                    <!-- فرم حذف گروهی -->
+                    <form id="bulkDeleteForm" action="/bulk_delete" method="POST" style="display: inline;">
+                        <button type="submit" id="bulkDeleteBtn" class="btn btn-danger mt-3" disabled>
+                            🗑️ حذف انتخاب شده‌ها
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function ()
+        {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.donor-checkbox');
+            const bulkForm = document.getElementById('bulkDeleteForm');
+            const bulkBtn = document.getElementById('bulkDeleteBtn');
 
+            // تیک زدن همه با کلیک روی چک‌باکس بالای جدول
+            selectAll.addEventListener('change', function ()
+            {
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                toggleBulkButton();
+            });
+
+            // فعال شدن دکمه حذف گروهی
+            checkboxes.forEach(cb =>
+            {
+                cb.addEventListener('change', toggleBulkButton);
+            });
+
+            function toggleBulkButton()
+            {
+                const checkedCount = document.querySelectorAll('.donor-checkbox:checked').length;
+                bulkBtn.disabled = checkedCount === 0;
+                if (checkedCount > 0)
+                {
+                    bulkBtn.innerText = `🗑️ حذف ${checkedCount} داوطلب انتخاب شده`;
+                } else
+                {
+                    bulkBtn.innerText = '🗑️ حذف انتخاب شده‌ها';
+                }
+            }
+
+            // ارسال آیدی‌ها به فرم مخفی قبل از سابمیت
+            bulkForm.addEventListener('submit', function (e)
+            {
+                e.preventDefault();
+                if (confirm(`آیا از حذف ${document.querySelectorAll('.donor-checkbox:checked').length} نفر مطمئن هستید؟`))
+                {
+                    // پاک کردن اینپوت‌های قبلی
+                    this.querySelectorAll('input[name="donor_ids"]').forEach(i => i.remove());
+
+                    // اضافه کردن آیدی‌های تیک خورده به فرم
+                    document.querySelectorAll('.donor-checkbox:checked').forEach(cb =>
+                    {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'donor_ids';
+                        input.value = cb.value;
+                        this.appendChild(input);
+                    });
+                    this.submit();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
