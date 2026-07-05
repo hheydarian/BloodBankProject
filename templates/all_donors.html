@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست داوطلبان</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'MyFont';
+            src: url('/static/fonts/SFArabic-Medium.ttf') format('truetype');
+        }
+
+        * {
+            font-family: 'MyFont', sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .navbar {
+            background-color: #fff !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .navbar-brand {
+            color: #e74c3c !important;
+            font-weight: 800 !important;
+        }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 600 !important;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        table thead {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        table thead th {
+            border: none !important;
+            padding: 15px !important;
+        }
+
+        table td {
+            padding: 15px !important;
+            vertical-align: middle;
+        }
+
+        table tbody tr:hover {
+            background-color: #fff5f5;
+        }
+
+        .badge {
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 8px !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">🩸 سامانه اهدای خون</a>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/">ثبت‌نام داوطلب</a></li>
+                <li class="nav-item"><a class="nav-link" href="/request">درخواست بیمارستان</a></li>
+                <li class="nav-item"><a class="nav-link" href="/all_donors">مشاهده لیست کل داوطلبان</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="table-container">
+                    <h4 class="text-center mb-4 text-secondary">لیست تمامی داوطلبان ثبت‌نام شده در سامانه</h4>
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>گروه خونی</th>
+                                <th>شهر</th>
+                                <th>شماره تماس</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donor in donors %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ donor['name'] }}</td>
+                                <td><span class="badge bg-danger">{{ donor['blood_type'] }}</span></td>
+                                <td>{{ donor['city'] }}</td>
+                                <td dir="ltr">{{ donor['phone'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">هیچ داوrobotانی تاکنون ثبت‌نام نکرده
+                                    است.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
